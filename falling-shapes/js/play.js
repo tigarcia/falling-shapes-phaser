@@ -2,6 +2,7 @@ var playState = {
   fallingShape: undefined,
   score: 0,
   scoreText: undefined,
+  timeText: undefined,
 
   setupFallingShape() {
     game.physics.enable(this.fallingShape, Phaser.ARCADE);
@@ -79,13 +80,24 @@ var playState = {
     this.scoreText.setText(`score: ${this.score}`);
   },
 
+  done() {
+    game.state.start('win', true, false, this.score);
+  },
+
   create() {
     this.fallingShape = this.createRandomShape();
     this.setupFallingShape(this.fallingShape);
     let styles = {font: "20px Arial",fill: "#ff0044"}
     this.scoreText = game.add.text(game.world.width-100, 10,
                     `score: ${this.score}`, styles);
+    this.timeText = game.add.text(game.world.width-100, 34,
+                    `time:   20`, styles);
 
     game.input.keyboard.onUpCallback = this.handleKeyUp.bind(this);
+    game.time.events.add(Phaser.Timer.SECOND * 2, this.done, this);
+  },
+
+  render() {
+    this.timeText.setText(`time:   ${Math.floor(game.time.events.duration/1000)}`);
   }
 };
