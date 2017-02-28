@@ -4,7 +4,6 @@ const game = new Phaser.Game(500, 500,
   {preload, create, update});
 
 let fallingShape,
-    cursors,
     color,
     isCircle,
     scoreText,
@@ -86,6 +85,9 @@ function handleKeyUp(e) {
 }
 
 function preload() {
+  game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+  game.scale.pageAlignHorizontally = true;
+  game.scale.pageAlignVertically = true;
   game.stage.backgroundColor = '#eee';
   score = 0;
 }
@@ -97,7 +99,6 @@ function create() {
   setupFallingShape(fallingShape);
   let styles = {font: "20px Arial",fill: "#ff0044"}
   scoreText = game.add.text(game.world.width-100, 10, `score: ${score}`, styles);
-  cursors = game.input.keyboard.createCursorKeys();
 
   game.input.keyboard.onUpCallback = handleKeyUp;
 }

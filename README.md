@@ -23,7 +23,6 @@ __Contact__: Please get in touch!
 * Understand how a canvas element works (phaser uses this to render your game).
 * Create a phaser game that uses the physics engine
 * Game architecture
-* Animate  character
 
 
 ## PhaserJS
@@ -290,27 +289,276 @@ Let's start with the html.  I've added bootstrap incase we want to style our pag
 <html>
 <head>
   <title>Falling Shapes</title>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <script
-  src="https://code.jquery.com/jquery-3.1.1.min.js"
-  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-  crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> 
   <link rel="stylesheet" type="text/css" href="index.css">
 </head>
-<body class="container">
+<body>
   <h2>Falling Shapes</h2>
   <div id="game">
   </div>
-  <p>
+  <div>
     <p class='red'>RED SQ = ^</p>
     <p class='red'>RED CIR = &lt;</p>
     <p>BLK CIR = &gt;</p>
     <p>BLK SQ = v</p>
-  </p>
+  </div>
   
   <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.js"></script>
   <script type="text/javascript" src="index.js"></script>
 </body>
 </html>
+```
+
+Notice at the bottom of the body, we've added `phaser.js` from a CDN and `index.js` which we'll use to implement our game.
+
+In `index.js`, the first thing we need to do is create our Phaser game:
+
+__Initial Setup__
+
+The parameters to a Game are in the [phaser docs](http://phaser.io/docs/2.6.2/Phaser.Game.html)
+
+The first two arguments are the height and with of the canvas.  
+
+Next, `Phaser.AUTO` tells phaser to use whichever context it thinks is best. (It will take WebGL if its available and fall back to 2d if WebGL is not there.  This is almost always what you want).
+
+Finally we are setting the state for phaser.  These are the functions we'll use to implement our game:
+
+
+```
+const game = new Phaser.Game(500, 500,
+  Phaser.AUTO,
+  document.getElementById("game"),
+  {preload, create, update});
+```
+
+Next, create our 3 functions:
+
+```
+function preload() {
+}
+
+function create() {
+}
+
+function update() {
+}
+```
+
+First, do any initial setup in preload (this is where you load images if you have any).
+
+```
+let score;
+function preload() {
+  game.stage.backgroundColor = '#eee';
+  score = 0;
+}
+```
+
+If you refresh the page, you should see a grey square with nothing happening. You've created your first game!
+
+__Show Score__
+
+Next, let's show our score on the screen:
+
+```
+let scoreText;
+function create() {
+  let styles = {font: "20px Arial",fill: "#ff0044"}
+  scoreText = game.add.text(game.world.width-100, 10, `score: ${score}`, styles);
+}
+```
+
+Notice that I'm not directly using the width of 500 here. That is important for later when we want to make our game scale.
+
+__Load Image__
+
+Next, let's create a sprite by grabbing an image from the web:
+
+In preload, we'll load the image:
+
+```
+function preload() {
+  // ...
+  const img = 'img/rithm.png';
+  game.load.image('rithm', img);
+}
+```
+Now in create, we need to put that image inside of a sprite.  We want to use the physics engine for phaser and it knows how to deal with sprites.
+
+```
+let rithm;
+function create() {
+  // ...
+  
+  rithm = game.add.sprite(game.world.width * 0.5, game.world.height * 0.2, 'rithm');
+  rithm.anchor.set(0.5, 0.5);
+  game.physics.arcade.enable(rithm);
+  
+}
+```
+
+__EXERCISE__
+
+The update method is similar to our draw method in the canvas example.  Use `rithm.body.x` and `rithm.body.y` to change position.
+
+<img src="https://cdn.pixabay.com/photo/2015/10/15/09/09/mathematics-989122_960_720.jpg" style="height: 300px;">
+
+__The Power of Physics__
+
+Now that we are using a physics engine, we can do less manual updating of position:
+
+```
+let rithm;
+function create() {
+  // ...
+  
+  rithm = game.add.sprite(game.world.width * 0.5, game.world.width * 0.2, 'rithm');
+  rithm.anchor.set(0.5, 0.5);
+  game.physics.arcade.enable(rithm);
+  rithm.body.velocity.set(0, 100);
+  
+}
+```
+
+We can also add:
+
+```
+rithm.body.collideWorldBounds=true;
+```
+and then:
+
+```
+rithm.body.bounce.set(.70);
+```
+
+__EXERCISE__
+
+Make two sprites on the screen.  Have them collide!
+
+![](https://upload.wikimedia.org/wikipedia/en/9/94/Planets_collide_logo.jpg)
+
+__Collision Detection__
+
+You may have gotten to the two sprites on the screen and moving, but there's a chance they didn't collide!  That is because we aren't checking for that.  We need to detect the collision in update:
+
+```
+function update() {
+  game.physics.arcade.collide(rithm, rithm2);
+}
+```
+
+Now on each update we are checking if the two sprites collide.
+
+__Using Canvas Shapes__
+
+Sprites are one of the few things Phaser arcade physics knows how to work with.  So if you want to create a canvas element, you must wrap it in a sprite:
+
+```
+  shape = game.add.graphics(game.world.width*0.5, game.world.height* 0.5);
+  shape.beginFill(0xFF0000);
+  shape.drawCircle(0,30,60);
+  shapeSprite = game.add.sprite(0, 0);
+  shapeSprite.addChild(shape);
+  shapeSprite.anchor.set(0.5,0.5);
+  game.physics.enable(shape, Phaser.ARCADE);
+  shape.body.velocity.set(0, 70);
+  shape.body.collideWorldBounds=true; 
+```
+
+__Add A Group__
+
+```
+  rithms = game.add.physicsGroup();
+  rithms.enableBody = true;
+  rithm = rithms.create(game.world.width * 0.5, game.world.height * 0.2, 'rithm');
+  rithm2 = rithms.create(game.world.width * 0.5, game.world.height * 0.8, 'rithm');
+  rithm.body.velocity.set(0, 100);
+  rithm2.body.velocity.set(0, -100);
+  rithms.setAll('body.bounce.y', 1);
+  rithms.setAll('body.collideWorldBounds', true);
+```
+
+__Create Random Shape__
+
+```
+function createRandomShape() {
+  isCircle = Math.floor(Math.random() * 2) > 0;
+  color = [0xFF0000 /*red*/, 0x000000/*black*/][Math.floor(Math.random() * 2)];
+  let shapeSprite;
+  let shape;
+  let height = game.world.height * (Math.random() * 0.4 + .3);
+  let width = game.world.width * (Math.random() * 0.4 + .3);
+  if (isCircle) {
+    shape = game.add.graphics(width, height);
+    shape.beginFill(color);
+    shape.drawCircle(0,30,60);
+  } else {
+    shape = game.add.graphics(width, height);
+    shape.beginFill(color);
+    shape.drawRect(0,0,60,60);
+  }
+  shapeSprite = game.add.sprite(0, 0);
+  shapeSprite.addChild(shape);
+  shapeSprite.anchor.set(0.5,0.5);
+  return shape;
+}
+```
+
+__Make the Shape Fall__
+
+```
+function setupFallingShape() {
+  game.physics.enable(fallingShape, Phaser.ARCADE);
+  fallingShape.body.velocity.set(0, 70);
+  fallingShape.checkWorldBounds = true;
+
+  fallingShape.events.onOutOfBounds.add(function(shape){
+    shape.kill();
+    score--;
+    updateScore();
+    fallingShape = createRandomShape();
+    setupFallingShape(fallingShape);
+  }, this);
+}
+```
+
+__Keyboard Events__
+
+
+```
+function handleKeyUp(e) {
+  if (e.keyCode == Phaser.Keyboard.UP ||
+      e.keyCode == Phaser.Keyboard.DOWN ||
+      e.keyCode == Phaser.Keyboard.LEFT ||
+      e.keyCode == Phaser.Keyboard.RIGHT) {
+    let correct = false;
+    if (e.keyCode == Phaser.Keyboard.LEFT) {
+      if (color === 0xFF0000 && isCircle) {
+        correct = true;
+      }
+    } else if (e.keyCode == Phaser.Keyboard.RIGHT) {
+      if (color === 0x000000 && isCircle) {
+        correct = true;
+      }
+    } else if (e.keyCode == Phaser.Keyboard.UP) {
+      if (color === 0xFF0000 && !isCircle) {
+        correct = true;
+      }
+    } else if (e.keyCode == Phaser.Keyboard.DOWN) {
+      if (color === 0x000000 && !isCircle) {
+        correct = true;
+      }
+    }
+    if (correct) {
+      fallingShape.kill();
+      fallingShape = createRandomShape();
+      setupFallingShape(fallingShape);
+      score++;
+    } else {
+      score--;
+    }
+    updateScore();
+
+  }
+}
+
 ```
