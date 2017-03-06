@@ -4,6 +4,8 @@ class Main extends Phaser.State {
     this.score = 0;
     this.scoreText = undefined;
     this.timeText = undefined;
+    this.isCircle = false;
+    this.color = 0xFF0000;
   }
 
   setupFallingShape() {
@@ -27,19 +29,19 @@ class Main extends Phaser.State {
         e.keyCode == Phaser.Keyboard.RIGHT) {
       let correct = false;
       if (e.keyCode == Phaser.Keyboard.LEFT) {
-        if (color === 0xFF0000 && isCircle) {
+        if (this.color === 0xFF0000 && this.isCircle) {
           correct = true;
         }
       } else if (e.keyCode == Phaser.Keyboard.RIGHT) {
-        if (color === 0x000000 && isCircle) {
+        if (this.color === 0x000000 && this.isCircle) {
           correct = true;
         }
       } else if (e.keyCode == Phaser.Keyboard.UP) {
-        if (color === 0xFF0000 && !isCircle) {
+        if (this.color === 0xFF0000 && !this.isCircle) {
           correct = true;
         }
       } else if (e.keyCode == Phaser.Keyboard.DOWN) {
-        if (color === 0x000000 && !isCircle) {
+        if (this.color === 0x000000 && !this.isCircle) {
           correct = true;
         }
       }
@@ -57,19 +59,19 @@ class Main extends Phaser.State {
   }
 
   createRandomShape() {
-    isCircle = Math.floor(Math.random() * 2) > 0;
-    color = [0xFF0000 /*red*/, 0x000000/*black*/][Math.floor(Math.random() * 2)];
+    this.isCircle = Math.floor(Math.random() * 2) > 0;
+    this.color = [0xFF0000 /*red*/, 0x000000/*black*/][Math.floor(Math.random() * 2)];
     let shapeSprite;
     let shape;
     let height = this.game.world.height * (Math.random() * 0.4 + .3);
     let width = this.game.world.width * (Math.random() * 0.4 + .3);
-    if (isCircle) {
+    if (this.isCircle) {
       shape = this.game.add.graphics(width, height);
-      shape.beginFill(color);
+      shape.beginFill(this.color);
       shape.drawCircle(0,30,60);
     } else {
       shape = this.game.add.graphics(width, height);
-      shape.beginFill(color);
+      shape.beginFill(this.color);
       shape.drawRect(0,0,60,60);
     }
     shapeSprite = this.game.add.sprite(0, 0);
@@ -96,7 +98,7 @@ class Main extends Phaser.State {
                     `time:   20`, styles);
 
     this.game.input.keyboard.onUpCallback = this.handleKeyUp.bind(this);
-    this.game.time.events.add(Phaser.Timer.SECOND * 2, this.done, this);
+    this.game.time.events.add(Phaser.Timer.SECOND * 30, this.done, this);
   }
 
   render() {
