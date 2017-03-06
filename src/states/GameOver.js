@@ -1,9 +1,8 @@
-class GameOver extends Phaser.State = {
-  score: undefined,
+class GameOver extends Phaser.State {
 
   init(score) {
     this.score = score;
-  },
+  }
 
   create() {
     alert(this.score);

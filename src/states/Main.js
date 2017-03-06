@@ -1,8 +1,10 @@
 class Main extends Phaser.State {
-  fallingShape: undefined,
-  score: 0,
-  scoreText: undefined,
-  timeText: undefined,
+  init() {
+    this.fallingShape = undefined;
+    this.score = 0;
+    this.scoreText = undefined;
+    this.timeText = undefined;
+  }
 
   setupFallingShape() {
     this.game.physics.enable(this.fallingShape, Phaser.ARCADE);
@@ -16,7 +18,7 @@ class Main extends Phaser.State {
       this.fallingShape = this.createRandomShape();
       this.setupFallingShape();
     }, this);
-  },
+  }
 
   handleKeyUp(e) {
     if (e.keyCode == Phaser.Keyboard.UP ||
@@ -52,7 +54,7 @@ class Main extends Phaser.State {
       this.updateScore();
 
     }
-  },
+  }
 
   createRandomShape() {
     isCircle = Math.floor(Math.random() * 2) > 0;
@@ -74,15 +76,15 @@ class Main extends Phaser.State {
     shapeSprite.addChild(shape);
     shapeSprite.anchor.set(0.5,0.5);
     return shape;
-  },
+  }
 
   updateScore() {
     this.scoreText.setText(`score: ${this.score}`);
-  },
+  }
 
   done() {
     this.game.state.start('GameOver', true, false, this.score);
-  },
+  }
 
   create() {
     this.fallingShape = this.createRandomShape();
@@ -95,7 +97,7 @@ class Main extends Phaser.State {
 
     this.game.input.keyboard.onUpCallback = this.handleKeyUp.bind(this);
     this.game.time.events.add(Phaser.Timer.SECOND * 2, this.done, this);
-  },
+  }
 
   render() {
     this.timeText.setText(`time:   ${Math.floor(this.game.time.events.duration/1000)}`);

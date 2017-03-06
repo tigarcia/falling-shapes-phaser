@@ -4,7 +4,7 @@ class Preload extends Phaser.State {
     this.game.scale.pageAlignHorizontally = true;
     this.game.scale.pageAlignVertically = true;
     this.game.stage.backgroundColor = '#eee';
-  },
+  }
 
   create() {
     this.game.state.start('Menu'); 
