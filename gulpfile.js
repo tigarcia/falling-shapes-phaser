@@ -16,10 +16,10 @@ var browserSync = require('browser-sync');
  * Using different folders/file names? Change these constants:
  */
 var PHASER_PATH = './node_modules/phaser/build/';
-var BUILD_PATH = './build';
+var BUILD_PATH = './dist';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
 var SOURCE_PATH = './src';
-var STATIC_PATH = './static';
+var STATIC_FILES = ['./index.html', './index.css']
 var ENTRY_FILE = SOURCE_PATH + '/index.js';
 var OUTPUT_FILE = 'game.js';
 
@@ -53,7 +53,7 @@ function logBuildMode() {
  */
 function cleanBuild() {
     if (!keepFiles) {
-        del(['build/**/*.*']);
+        del(['dist/**/*.*']);
     } else {
         keepFiles = false;
     }
@@ -64,7 +64,7 @@ function cleanBuild() {
  * Check out README.md for more info on the '/static' folder.
  */
 function copyStatic() {
-    return gulp.src(STATIC_PATH + '/**/*')
+    return gulp.src(STATIC_FILES)
         .pipe(gulp.dest(BUILD_PATH));
 }
 
@@ -140,7 +140,7 @@ function serve() {
     gulp.watch(SOURCE_PATH + '/**/*.js', ['watch-js']);
     
     // Watches for changes in files inside the './static' folder. Also sets 'keepFiles' to true (see cleanBuild()).
-    gulp.watch(STATIC_PATH + '/**/*', ['watch-static']).on('change', function() {
+    gulp.watch(STATIC_FILES, ['watch-static']).on('change', function() {
         keepFiles = true;
     });
 
