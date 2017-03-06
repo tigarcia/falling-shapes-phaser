@@ -1,0 +1,42 @@
+{
+  "name": "falling-shapes",
+  "version": "0.1.0",
+  "description": "A phaser game to test your mental speed",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp",
+    "production": "gulp --production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tigarcia/falling-shapes-phaser.git"
+  },
+  "keywords": [
+    "phaser",
+    "game",
+    "javascript"
+  ],
+  "author": "Tim Garcia <tim@rithmschool.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tigarcia/falling-shapes-phaser/issues"
+  },
+  "homepage": "https://github.com/tigarcia/falling-shapes-phaser#readme",
+  "devDependencies": {
+    "babelify": "^7.3.0",
+    "browser-sync": "^2.18.8",
+    "browserify": "^14.1.0",
+    "del": "^2.2.2",
+    "exorcist": "^0.4.0",
+    "gulp": "^3.9.1",
+    "gulp-buffer": "0.0.2",
+    "gulp-if": "^2.0.2",
+    "gulp-uglify": "^2.0.1",
+    "gulp-util": "^3.0.8",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^7.0.1"
+  },
+  "dependencies": {
+    "phaser": "^2.6.2"
+  }
+}
