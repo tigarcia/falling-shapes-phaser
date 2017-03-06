@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/tigarcia/falling-shapes-phaser#readme",
   "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.8",
     "browserify": "^14.1.0",

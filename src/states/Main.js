@@ -1,11 +1,11 @@
-var playState = {
+class Main extends Phaser.State {
   fallingShape: undefined,
   score: 0,
   scoreText: undefined,
   timeText: undefined,
 
   setupFallingShape() {
-    game.physics.enable(this.fallingShape, Phaser.ARCADE);
+    this.game.physics.enable(this.fallingShape, Phaser.ARCADE);
     this.fallingShape.body.velocity.set(0, 70);
     this.fallingShape.checkWorldBounds = true;
 
@@ -59,18 +59,18 @@ var playState = {
     color = [0xFF0000 /*red*/, 0x000000/*black*/][Math.floor(Math.random() * 2)];
     let shapeSprite;
     let shape;
-    let height = game.world.height * (Math.random() * 0.4 + .3);
-    let width = game.world.width * (Math.random() * 0.4 + .3);
+    let height = this.game.world.height * (Math.random() * 0.4 + .3);
+    let width = this.game.world.width * (Math.random() * 0.4 + .3);
     if (isCircle) {
-      shape = game.add.graphics(width, height);
+      shape = this.game.add.graphics(width, height);
       shape.beginFill(color);
       shape.drawCircle(0,30,60);
     } else {
-      shape = game.add.graphics(width, height);
+      shape = this.game.add.graphics(width, height);
       shape.beginFill(color);
       shape.drawRect(0,0,60,60);
     }
-    shapeSprite = game.add.sprite(0, 0);
+    shapeSprite = this.game.add.sprite(0, 0);
     shapeSprite.addChild(shape);
     shapeSprite.anchor.set(0.5,0.5);
     return shape;
@@ -81,23 +81,25 @@ var playState = {
   },
 
   done() {
-    game.state.start('win', true, false, this.score);
+    this.game.state.start('GameOver', true, false, this.score);
   },
 
   create() {
     this.fallingShape = this.createRandomShape();
     this.setupFallingShape(this.fallingShape);
     let styles = {font: "20px Arial",fill: "#ff0044"}
-    this.scoreText = game.add.text(game.world.width-100, 10,
+    this.scoreText = this.game.add.text(this.game.world.width-100, 10,
                     `score: ${this.score}`, styles);
-    this.timeText = game.add.text(game.world.width-100, 34,
+    this.timeText = this.game.add.text(this.game.world.width-100, 34,
                     `time:   20`, styles);
 
-    game.input.keyboard.onUpCallback = this.handleKeyUp.bind(this);
-    game.time.events.add(Phaser.Timer.SECOND * 2, this.done, this);
+    this.game.input.keyboard.onUpCallback = this.handleKeyUp.bind(this);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, this.done, this);
   },
 
   render() {
-    this.timeText.setText(`time:   ${Math.floor(game.time.events.duration/1000)}`);
+    this.timeText.setText(`time:   ${Math.floor(this.game.time.events.duration/1000)}`);
   }
-};
+}
+
+export default Main;

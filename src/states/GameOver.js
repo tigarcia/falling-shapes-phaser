@@ -1,4 +1,4 @@
-var winState = {
+class GameOver extends Phaser.State = {
   score: undefined,
 
   init(score) {
@@ -8,4 +8,6 @@ var winState = {
   create() {
     alert(this.score);
   }
-};
+}
+
+export default GameOver;

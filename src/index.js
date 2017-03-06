@@ -1,11 +1,24 @@
-const game = new Phaser.Game(500, 500,
-  Phaser.AUTO,
-  document.getElementById("game"));
+import Boot from 'states/Boot';
+import Preload from 'states/Preload';
+import Menu from 'states/Menu';
+import Main from 'states/Main';
+import GameOver from 'states/GameOver';
 
-game.state.add('boot',bootState);
-game.state.add('load',loadState);
-game.state.add('menu',menuState);
-game.state.add('play',playState);
-game.state.add('win', winState);
+class Game extends Phaser.Game {
 
-game.state.start('boot');
+  constructor() {
+
+    super(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
+
+    this.state.add('Boot', Boot, false);
+    this.state.add('Preload', Preload, false);
+    this.state.add('Menu', Menu, false);
+    this.state.add('Main', Main, false);
+    this.state.add('GameOver', GameOver, false);
+
+    this.state.start('Boot');
+  }
+
+}
+
+new Game();
