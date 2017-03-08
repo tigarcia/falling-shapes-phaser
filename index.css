@@ -1,0 +1,13 @@
+body {
+  text-align: center;
+  background-color: black;
+}
+
+#game {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.red {
+  color: red;
+}
